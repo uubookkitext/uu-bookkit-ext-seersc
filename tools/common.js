@@ -1,5 +1,5 @@
 
-let common = function() {
+(function common() {
 
   let findReactComponent = function (dom, traverseUp = 0) {
     const key = Object.keys(dom).find(key => key.startsWith("__reactInternalInstance$"));
@@ -21,4 +21,5 @@ let common = function() {
     }
     return compFiber.stateNode;
   }
-}
+
+})

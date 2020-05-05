@@ -1,5 +1,5 @@
 
-let uuBookKit = function() {
+(function uuBookKit() {
 
   let getDictionaryEntryData = async function(code) {
     let response = await UuApp.AppClient.Client.get(getUri() + "getDictionaryEntryData", {code: code}, {headers: {Authorization: getAuthorization()}});
@@ -63,4 +63,4 @@ let uuBookKit = function() {
     });
   }
 
-}
+})
