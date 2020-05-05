@@ -1,5 +1,5 @@
 
-export function uuBookKit() {
+let uuBookKit = function() {
 
   let getDictionaryEntryData = async function(code) {
     let response = await UuApp.AppClient.Client.get(getUri() + "getDictionaryEntryData", {code: code}, {headers: {Authorization: getAuthorization()}});
