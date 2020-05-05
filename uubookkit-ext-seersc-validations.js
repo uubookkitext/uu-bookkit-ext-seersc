@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         uuBookKit-ext-seersc-validations
 // @namespace    https://github.com/uubookkitext/uu-bookkit-ext-seersc
-// @version      0.1.2
+// @version      0.1.1
 // @description  uuBookkit extension to create validation rule and validation messages for seersc purpose
 // @author       Tomas Trtik, Petr Havelka
 // @match        https://uuos9.plus4u.net/uu-dockitg01-main/*
@@ -72,22 +72,22 @@
 
   let createValidationMessage = async function(messageTemplateCode, addSectionButtonWrapper) {
     let section = addSectionButtonWrapper.next(".uudcc-bricks-basic-section").first();
-    let basicSection = common.findReactComponent(section[0]).props.parent;
+    let basicSection = findReactComponent(section[0]).props.parent;
 
     // read template
-    let template = await uuBookKit.getDictionaryEntryData(messageTemplateCode);
+    let template = await getDictionaryEntryData(messageTemplateCode);
     // create new entry from template
-    let code = await uuBookKit.createDictionaryEntry("ValMsg new", template);
+    let code = await createDictionaryEntry("ValMsg new", template);
 
     // get the existing content
     let content = basicSection.getComponentContentById();
     // insert dictionary link to the existing content
     let idx = content.indexOf("</UU5.Bricks.Section></UU5.Bricks.Section>");
-    content = "<uu5string/>" + content.slice(0, idx) + uuBookKit.getDictionaryEntryLink(code) + content.slice(idx);
+    content = "<uu5string/>" + content.slice(0, idx) + getDictionaryEntryLink(code) + content.slice(idx);
 
     // update page section
     basicSection.setContent(content);
-    basicSection.onDccDataChange(content, (data) => console.log(data), (data) => console.log("Error: " + data));
+    basicSection.onDccDataChange(content, (data) => {}, (data) => console.log("Error: " + data));
   }
 
   let addRule = async function(ruleTemplateCode, addSectionButtonWrapper, origSection) {
@@ -99,14 +99,14 @@
       }, 200);
       return;
     }
-    let basicSection = common.findReactComponent(section[0]).props.parent;
+    let basicSection = findReactComponent(section[0]).props.parent;
 
     // read template
-    let template = await uuBookKit.getDictionaryEntryData(ruleTemplateCode);
+    let template = await getDictionaryEntryData(ruleTemplateCode);
 
     // update page section with the template content
     basicSection.setContent(template);
-    basicSection.onDccDataChange(template, (data) => console.log(data), (data) => console.log("Error: " + data));
+    basicSection.onDccDataChange(template, (data) => {}, (data) => console.log("Error: " + data));
   }
 
   let createAddButton = function(text, buttonClass, buttonSpanClass) {
