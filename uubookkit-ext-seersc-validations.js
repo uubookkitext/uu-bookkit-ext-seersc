@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         uuBookKit-ext-seersc-validations
 // @namespace    https://github.com/uubookkitext/uu-bookkit-ext-seersc
-// @version      0.1.0
+// @version      0.1.1
 // @description  uuBookkit extension to create validation rule and validation messages for seersc purpose
 // @author       Tomas Trtik, Petr Havelka
 // @match        https://uuos9.plus4u.net/uu-dockitg01-main/*
@@ -13,16 +13,13 @@
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.js
 // @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
 // @require      https://raw.githubusercontent.com/uubookkitext/uu-bookkit-ext-seersc/master/tools/uubookkit.js
+// @require      https://raw.githubusercontent.com/uubookkitext/uu-bookkit-ext-seersc/master/tools/common.js
 // ==/UserScript==
 
 (function() {
   'use strict';
 
   console.log("uuBookKit-ext-seersc-validations starting...");
-
-  let currentBook = {};
-  let currentPageData = {};
-  let currentBookStructure = {};
 
   let initPage = function() {
     let page = $(".uu-bookkit-page-ready");
@@ -75,18 +72,18 @@
 
   let createValidationMessage = async function(messageTemplateCode, addSectionButtonWrapper) {
     let section = addSectionButtonWrapper.next(".uudcc-bricks-basic-section").first();
-    let basicSection = findReactComponent(section[0]).props.parent;
+    let basicSection = common.findReactComponent(section[0]).props.parent;
 
     // read template
     let template = await uuBookKit.getDictionaryEntryData(messageTemplateCode);
     // create new entry from template
-    let code = await createDictionaryEntry("ValMsg new", template);
+    let code = await uuBookKit.createDictionaryEntry("ValMsg new", template);
 
     // get the existing content
     let content = basicSection.getComponentContentById();
     // insert dictionary link to the existing content
     let idx = content.indexOf("</UU5.Bricks.Section></UU5.Bricks.Section>");
-    content = "<uu5string/>" + content.slice(0, idx) + getDictionaryEntryLink(code) + content.slice(idx);
+    content = "<uu5string/>" + content.slice(0, idx) + uuBookKit.getDictionaryEntryLink(code) + content.slice(idx);
 
     // update page section
     basicSection.setContent(content);
@@ -97,10 +94,12 @@
     let section = addSectionButtonWrapper.next(".uudcc-bricks-basic-section").first();
     // waiting for the new section
     if (!section[0] || (section[0].id == origSection[0].id)) {
-      setTimeout(function() {addRule(ruleTemplateCode, addSectionButtonWrapper, origSection)}, 200);
+      setTimeout(function() {
+        addRule(ruleTemplateCode, addSectionButtonWrapper, origSection)
+      }, 200);
       return;
     }
-    let basicSection = findReactComponent(section[0]).props.parent;
+    let basicSection = common.findReactComponent(section[0]).props.parent;
 
     // read template
     let template = await uuBookKit.getDictionaryEntryData(ruleTemplateCode);
@@ -118,125 +117,15 @@
     return addButton;
   }
 
-  ////////////////////////////////////////////////
-  // bookkit helpers
-
-  /*
-  let getDictionaryEntryData = async function(code) {
-    let response = await UuApp.AppClient.Client.get(getUri() + "getDictionaryEntryData", {code: code}, {headers: {Authorization: getAuthorization()}});
-    let dictionaryEntryData = String.fromCharCode.apply(null, response.data);
-    //createDictionaryEntry("xxx", dictionaryEntryData);
-    return dictionaryEntryData;
-  }
-   */
-
-  let createDictionaryEntry = async function (name, content) {
-    let dtoIn = {
-      code: generateUUID(32),
-      name: name,
-      type: "uu5string",
-      isPublic: true,
-      data: btoa(content)
-    };
-    let opts = {
-      headers: {
-        "Content-Transfer-Encoding": "base64",
-        Authorization: getAuthorization()
-      }
-    };
-    await UuApp.AppClient.Client.post(getUri() + "createDictionaryEntry", dtoIn, opts);
-    return dtoIn.code;
-  }
-
-  let getDictionaryEntryLink = function(code) {
-    return "<UuBookKit.References.DictionaryEntry code=\"" + code + "\"/>";
-  }
-
-  let getAuthorization = function() {
-    let oidcSessionKey = Object.keys(window.sessionStorage).find(key=>key.startsWith("uu_app_oidc_providers_oidcg02_session"));
-    let sessionStorage = window.sessionStorage.getItem(oidcSessionKey);
-    let authorization = "Bearer " + JSON.parse(sessionStorage).idToken;
-    return authorization;
-  }
-
-  let getUri = function() {
-    return UU5.Environment.ccr.byKey["UuBookKit.BookReady"].props.calls.APP_BASE_URI;
-  }
-
-  let getPageCode = function() {
-    return UU5.Environment.ccr.byKey["UuBookKit.Page"].props.page;
-  }
-
-  ////////////////////////////////////////////////
-  // generic helpers
-
-  const REGEXP_XY = /[xy]/g;
-  let generateUUID = function(length = 32) {
-    length = Math.max(length, 8);
-    let uuidCore = 'x4xxxyxx';
-    const additionalCharLength = length - uuidCore.length;
-    for (let i = 0; i < additionalCharLength; ++i) {
-      if (i % 2 === 0) uuidCore = uuidCore + 'x';
-      else uuidCore = 'x' + uuidCore;
-    }
-
-    let timeNum = new Date().getTime();
-    return uuidCore.replace(REGEXP_XY, char => {
-      let r = (timeNum + Math.random() * 16) % 16 | 0;
-      timeNum = Math.floor(timeNum / 16);
-      return (char === "x" ? r : r & 0x3 | 0x8).toString(16);
-    });
-  }
-
-  let findReactComponent = function(dom, traverseUp = 0) {
-    const key = Object.keys(dom).find(key=>key.startsWith("__reactInternalInstance$"));
-    const domFiber = dom[key];
-    if (domFiber == null) return null;
-
-    const GetCompFiber = fiber=>{
-      //return fiber._debugOwner; // this also works, but is __DEV__ only
-      let parentFiber = fiber.return;
-      while (typeof parentFiber.type == "string") {
-        parentFiber = parentFiber.return;
-      }
-      return parentFiber;
-    };
-
-    let compFiber = GetCompFiber(domFiber);
-    for (let i = 0; i < traverseUp; i++) {
-      compFiber = GetCompFiber(compFiber);
-    }
-    return compFiber.stateNode;
-  }
-
   // inject to CMD call
   let injectToHttpRequest = function () {
     let origOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
-
-      if (url.includes("loadBook")) {
-        this.addEventListener('load', function () {
-          currentBook = JSON.parse(this.responseText);
-        });
-      }
       if (url.includes("loadPage")) {
         this.addEventListener('load', function () {
-          currentPageData = JSON.parse(this.responseText);
           initPage();
         });
       }
-      if (url.includes("getBookStructure")) {
-        this.addEventListener('load', function () {
-          currentBookStructure = JSON.parse(this.responseText);
-        });
-      }
-      /*
-       if (url.includes("updatePageSection")) {
-         this.addEventListener('load', function () {
-           console.log(JSON.parse(this.responseText));
-         });
-       }
- */
       origOpen.apply(this, arguments);
     };
   };
