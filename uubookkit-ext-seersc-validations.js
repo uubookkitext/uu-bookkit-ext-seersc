@@ -12,7 +12,7 @@
 // @require      http://code.jquery.com/jquery-2.1.4.min.js
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.js
 // @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
-// @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
+// @require      https://raw.githubusercontent.com/uubookkitext/uu-bookkit-ext-seersc/master/tools/uubookkit.js
 // ==/UserScript==
 
 (function() {
@@ -78,7 +78,7 @@
     let basicSection = findReactComponent(section[0]).props.parent;
 
     // read template
-    let template = await getDictionaryEntryData(messageTemplateCode);
+    let template = await uuBookKit.getDictionaryEntryData(messageTemplateCode);
     // create new entry from template
     let code = await createDictionaryEntry("ValMsg new", template);
 
@@ -103,7 +103,7 @@
     let basicSection = findReactComponent(section[0]).props.parent;
 
     // read template
-    let template = await getDictionaryEntryData(ruleTemplateCode);
+    let template = await uuBookKit.getDictionaryEntryData(ruleTemplateCode);
 
     // update page section with the template content
     basicSection.setContent(template);
