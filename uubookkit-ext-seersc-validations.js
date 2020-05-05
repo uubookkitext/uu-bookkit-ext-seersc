@@ -12,6 +12,7 @@
 // @require      http://code.jquery.com/jquery-2.1.4.min.js
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.js
 // @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
+// @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
 // ==/UserScript==
 
 (function() {
@@ -120,12 +121,14 @@
   ////////////////////////////////////////////////
   // bookkit helpers
 
+  /*
   let getDictionaryEntryData = async function(code) {
     let response = await UuApp.AppClient.Client.get(getUri() + "getDictionaryEntryData", {code: code}, {headers: {Authorization: getAuthorization()}});
     let dictionaryEntryData = String.fromCharCode.apply(null, response.data);
     //createDictionaryEntry("xxx", dictionaryEntryData);
     return dictionaryEntryData;
   }
+   */
 
   let createDictionaryEntry = async function (name, content) {
     let dtoIn = {
