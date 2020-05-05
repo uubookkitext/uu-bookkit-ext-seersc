@@ -12,8 +12,8 @@
 // @require      http://code.jquery.com/jquery-2.1.4.min.js
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.js
 // @require      https://cdn.plus4u.net/uu-appg01-core/4.0.0/uu_appg01_core.js
-// @require      https://raw.githubusercontent.com/uubookkitext/uu-bookkit-ext-seersc/master/tools/uubookkit.js
-// @require      https://raw.githubusercontent.com/uubookkitext/uu-bookkit-ext-seersc/master/tools/common.js
+// @require      https://github.com/uubookkitext/uu-bookkit-ext-seersc/raw/master/tools/uubookkit.js
+// @require      https://github.com/uubookkitext/uu-bookkit-ext-seersc/raw/master/tools/common.js
 // ==/UserScript==
 
 (function() {
