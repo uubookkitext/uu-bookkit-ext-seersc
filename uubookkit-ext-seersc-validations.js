@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         uuBookKit-ext-seersc-validations
 // @namespace    https://github.com/uubookkitext/uu-bookkit-ext-seersc
-// @version      0.1.1
+// @version      0.1.2
 // @description  uuBookkit extension to create validation rule and validation messages for seersc purpose
 // @author       Tomas Trtik, Petr Havelka
 // @match        https://uuos9.plus4u.net/uu-dockitg01-main/*
