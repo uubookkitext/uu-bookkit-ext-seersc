@@ -24,4 +24,4 @@ The content of rule and message is editable directly from the page. The rule is 
 
 # Install as a User Script - Tampermonkey
 1. Add https://tampermonkey.net/ into your browser
-2. Install User script from this URL: [uubookkit-ext-seersc-validations.js](https://github.com/uubookkitext/uu-bookkit-ext-seersc/raw/master/uubookkit-ext-seersc-validations.js)
+2. Install User script from this URL: [uubookkit-ext-seersc-validations.js](https://github.com/uubookkitext/uu-bookkit-ext-seersc/raw/master/browser/uubookkit-ext-seersc-validations.js)
