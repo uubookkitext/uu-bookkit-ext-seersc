@@ -1,0 +1,15 @@
+{
+  "name": "bookkit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uu_appg01_server-client": "^4.6.2"
+  }
+}
